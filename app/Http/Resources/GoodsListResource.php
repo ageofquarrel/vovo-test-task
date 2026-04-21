@@ -25,10 +25,10 @@ final class GoodsListResource extends JsonResource
             'category_id' => $this->category_id,
             'in_stock' => $this->in_stock,
             'rating' => $this->rating,
-            'category' => $this->whenLoaded('category', fn (): array => [
+            'category' => [
                 'id' => $this->category->id,
                 'name' => $this->category->name,
-            ]),
+            ],
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
         ];
     }

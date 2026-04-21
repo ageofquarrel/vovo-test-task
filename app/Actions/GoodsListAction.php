@@ -27,7 +27,7 @@ final class GoodsListAction
     {
         $query = $this->goodRepository->list($filters);
 
-        if ($filters->sort !== null) {
+        if ($filters->sort) {
             $query = $this->goodRepository->sort($query, $filters->sort);
         }
 
