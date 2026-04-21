@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Category;
+use App\Models\Good;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,11 +18,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->call(CategorySeeder::class);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $categoryIds = Category::query()->pluck('id')->all();
+
+        Good::factory()
+            ->count(10000)
+            ->state(fn () => [
+                'category_id' => fake()->randomElement($categoryIds),
+            ])
+            ->create();
     }
 }
