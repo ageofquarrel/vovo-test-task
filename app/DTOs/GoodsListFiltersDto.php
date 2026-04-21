@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\DTOs;
 
+use App\Enums\GoodsSortingEnum;
+
 /**
  * DTO для фильтрации списка товаров.
  */
@@ -19,11 +21,14 @@ final class GoodsListFiltersDto
         public readonly ?int $categoryId,
         public readonly ?bool $inStock,
         public readonly ?float $ratingFrom,
+        public readonly ?GoodsSortingEnum $sort,
+        public readonly int $page,
+        public readonly int $itemsPerPage,
     ) {
     }
 
     /**
-     * Создание DTO из массива.
+     * Создание DTO из массива.     *
      */
     public static function fromArray(array $validated): self
     {
@@ -38,6 +43,13 @@ final class GoodsListFiltersDto
                 fn (mixed $v): ?bool => filter_var($v, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE),
             ),
             ratingFrom: self::getNullable($validated, 'rating_from', fn (mixed $v): float => (float) $v),
+            sort: self::getNullable(
+                $validated,
+                'sort',
+                fn (mixed $v): GoodsSortingEnum => GoodsSortingEnum::from((string) $v),
+            ),
+            page: (int) $validated['page'],
+            itemsPerPage: (int) $validated['items_per_page'],
         );
     }
 

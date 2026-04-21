@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\DTOs\GoodsListFiltersDto;
+use App\Enums\GoodsSortingEnum;
 use App\Models\Good;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -43,6 +44,30 @@ final class GoodRepository
             ->when(
                 $filters->ratingFrom !== null,
                 fn (Builder $query): Builder => $query->where('rating', '>=', $filters->ratingFrom)
+            );
+    }
+
+    /**
+     * Сортировка товаров.
+     */
+    public function sort(Builder $query, GoodsSortingEnum $sort): Builder
+    {
+        return $query
+            ->when(
+                $sort === GoodsSortingEnum::PriceAsc,
+                fn (Builder $builder): Builder => $builder->orderBy('price', 'asc')
+            )
+            ->when(
+                $sort === GoodsSortingEnum::PriceDesc,
+                fn (Builder $builder): Builder => $builder->orderBy('price', 'desc')
+            )
+            ->when(
+                $sort === GoodsSortingEnum::RatingDesc,
+                fn (Builder $builder): Builder => $builder->orderBy('rating', 'desc')
+            )
+            ->when(
+                $sort === GoodsSortingEnum::Newest,
+                fn (Builder $builder): Builder => $builder->orderBy('created_at', 'desc')
             );
     }
 }
